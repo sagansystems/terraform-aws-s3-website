@@ -82,6 +82,12 @@ variable "logs_expiration_days" {
   default     = 90
 }
 
+variable "logs_object_versioning_enabled" {
+  description = "Enable object versioning on the logs bucket"
+  type        = bool
+  default     = false
+}
+
 variable "lifecycle_rule_enabled" {
   type        = bool
   default     = false

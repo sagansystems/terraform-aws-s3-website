@@ -40,7 +40,7 @@ resource "aws_s3_bucket" "default" {
   #bridgecrew:skip=BC_AWS_S3_1:The bucket used for a public static website. (https://docs.bridgecrew.io/docs/s3_1-acl-read-permissions-everyone)
   #bridgecrew:skip=BC_AWS_S3_14:Skipping `Ensure all data stored in the S3 bucket is securely encrypted at rest` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
   #bridgecrew:skip=CKV_AWS_52:Skipping `Ensure S3 bucket has MFA delete enabled` due to issue using `mfa_delete` by terraform (https://github.com/hashicorp/terraform-provider-aws/issues/629).
-  acl           = "public-read"
+  acl           = var.bucket_acl
   bucket        = var.hostname
   tags          = module.default_label.tags
   force_destroy = var.force_destroy
@@ -111,19 +111,24 @@ resource "aws_s3_bucket" "default" {
 # AWS only supports a single bucket policy on a bucket. You can combine multiple Statements into a single policy, but not attach multiple policies.
 # https://github.com/hashicorp/terraform/issues/10543
 resource "aws_s3_bucket_policy" "default" {
+  count  = var.create_bucket_policy ? 1 : 0
   bucket = aws_s3_bucket.default.id
   policy = data.aws_iam_policy_document.default.json
 }
 
 data "aws_iam_policy_document" "default" {
-  statement {
-    actions = ["s3:GetObject"]
+  dynamic "statement" {
+    for_each = var.allow_public_anonymous_object_read ? ["true"] : []
 
-    resources = ["${aws_s3_bucket.default.arn}/*"]
+    content {
+      sid       = "AllowAnonymousGetObject"
+      actions   = ["s3:GetObject"]
+      resources = ["${aws_s3_bucket.default.arn}/*"]
 
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
     }
   }
 
@@ -202,6 +207,15 @@ data "aws_iam_policy_document" "default" {
       }
     }
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "default" {
+  count                   = var.block_public_access ? 1 : 0
+  bucket                  = aws_s3_bucket.default.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 data "aws_iam_policy_document" "replication" {

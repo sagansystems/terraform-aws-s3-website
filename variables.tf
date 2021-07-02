@@ -147,3 +147,31 @@ variable "encryption_enabled" {
   default     = false
   description = "When set to 'true' the resource will have AES256 encryption enabled by default"
 }
+
+variable "bucket_acl" {
+  type    = string
+  default = "public-read"
+
+  description = <<-EOD
+  The canned ACL to apply to the bucket.
+  Valid values: private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write
+  EOD
+}
+
+variable "block_public_access" {
+  type        = bool
+  default     = false
+  description = "Block public access to the bucket"
+}
+
+variable "create_bucket_policy" {
+  type        = bool
+  default     = true
+  description = "Create the bucket policy"
+}
+
+variable "allow_public_anonymous_object_read" {
+  type        = bool
+  default     = true
+  description = "Allow anonymous object read in bucket policy"
+}

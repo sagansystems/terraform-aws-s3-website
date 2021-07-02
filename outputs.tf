@@ -32,3 +32,8 @@ output "s3_bucket_hosted_zone_id" {
   value       = aws_s3_bucket.default.hosted_zone_id
   description = "The Route 53 Hosted Zone ID for this bucket's region"
 }
+
+output "s3_bucket_policy_document_json" {
+  value       = data.aws_iam_policy_document.default.json
+  description = "Default S3 bucket policy document JSON"
+}

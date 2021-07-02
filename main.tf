@@ -117,18 +117,14 @@ resource "aws_s3_bucket_policy" "default" {
 }
 
 data "aws_iam_policy_document" "default" {
-  dynamic "statement" {
-    for_each = var.allow_public_anonymous_object_read ? ["true"] : []
+  statement {
+    sid       = "AllowGetObject"
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.default.arn}/*"]
 
-    content {
-      sid       = "AllowAnonymousGetObject"
-      actions   = ["s3:GetObject"]
-      resources = ["${aws_s3_bucket.default.arn}/*"]
-
-      principals {
-        type        = "AWS"
-        identifiers = ["*"]
-      }
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
     }
   }
 

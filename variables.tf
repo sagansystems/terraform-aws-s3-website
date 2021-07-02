@@ -169,9 +169,3 @@ variable "create_bucket_policy" {
   default     = true
   description = "Create the bucket policy"
 }
-
-variable "allow_public_anonymous_object_read" {
-  type        = bool
-  default     = true
-  description = "Allow anonymous object read in bucket policy"
-}

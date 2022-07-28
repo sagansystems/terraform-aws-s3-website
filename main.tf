@@ -16,15 +16,16 @@ locals {
 }
 
 module "logs" {
-  source                   = "cloudposse/s3-log-storage/aws"
-  version                  = "0.20.0"
-  attributes               = ["logs"]
-  enabled                  = var.logs_enabled
-  standard_transition_days = var.logs_standard_transition_days
-  glacier_transition_days  = var.logs_glacier_transition_days
-  expiration_days          = var.logs_expiration_days
-  force_destroy            = var.force_destroy
-  versioning_enabled       = var.logs_object_versioning_enabled
+  source                    = "cloudposse/s3-log-storage/aws"
+  version                   = "0.20.0"
+  attributes                = ["logs"]
+  enabled                   = var.logs_enabled
+  standard_transition_days  = var.logs_standard_transition_days
+  enable_glacier_transition = var.logs_enable_glacier_transition
+  glacier_transition_days   = var.logs_glacier_transition_days
+  expiration_days           = var.logs_expiration_days
+  force_destroy             = var.force_destroy
+  versioning_enabled        = var.logs_object_versioning_enabled
 
   context = module.this.context
 }
@@ -119,7 +120,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cdn_bucket" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }

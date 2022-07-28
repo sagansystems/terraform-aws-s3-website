@@ -70,6 +70,12 @@ variable "logs_standard_transition_days" {
   default     = 30
 }
 
+variable "logs_enable_glacier_transition" {
+  type        = bool
+  description = "Enables the transition to AWS Glacier which can cause unnecessary costs for huge amount of small files"
+  default     = false
+}
+
 variable "logs_glacier_transition_days" {
   type        = number
   description = "Number of days after which to move the data to the glacier storage tier"
@@ -79,7 +85,7 @@ variable "logs_glacier_transition_days" {
 variable "logs_expiration_days" {
   type        = number
   description = "Number of days after which to expunge the objects"
-  default     = 90
+  default     = 60
 }
 
 variable "logs_object_versioning_enabled" {

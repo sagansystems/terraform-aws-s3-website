@@ -34,6 +34,7 @@ module "default_label" {
   source     = "cloudposse/label/null"
   version    = "0.24.1"
   attributes = ["origin"]
+  tags       = var.tags
   context    = module.this.context
 }
 

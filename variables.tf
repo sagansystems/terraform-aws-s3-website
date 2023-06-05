@@ -106,18 +106,6 @@ variable "prefix" {
   description = "Prefix identifying one or more objects to which the rule applies"
 }
 
-variable "noncurrent_version_transition_days" {
-  type        = number
-  default     = 30
-  description = "Number of days to persist in the standard storage tier before moving to the glacier tier infrequent access tier"
-}
-
-variable "noncurrent_version_expiration_days" {
-  type        = number
-  default     = 90
-  description = "Specifies when noncurrent object versions expire"
-}
-
 variable "versioning_enabled" {
   type        = bool
   default     = true
@@ -152,4 +140,10 @@ variable "encryption_enabled" {
   type        = bool
   default     = false
   description = "When set to 'true' the resource will have AES256 encryption enabled by default"
+}
+
+variable "enable_origin_bucket_intelligent_tiering_lifecycle_rule" {
+  type        = bool
+  default     = false
+  description = "Enable or disable intelligent tiering lifecycle rule"
 }

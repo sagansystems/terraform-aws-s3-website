@@ -81,22 +81,6 @@ resource "aws_s3_bucket" "default" {
     enabled = var.versioning_enabled
   }
 
-  lifecycle_rule {
-    id      = module.default_label.id
-    enabled = var.lifecycle_rule_enabled
-    prefix  = var.prefix
-    tags    = module.default_label.tags
-
-    noncurrent_version_transition {
-      days          = var.noncurrent_version_transition_days
-      storage_class = "GLACIER"
-    }
-
-    noncurrent_version_expiration {
-      days = var.noncurrent_version_expiration_days
-    }
-  }
-
   dynamic "server_side_encryption_configuration" {
     for_each = var.encryption_enabled ? ["true"] : []
 
@@ -122,6 +106,22 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cdn_bucket" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "default" {
+  count = var.enable_origin_bucket_intelligent_tiering_lifecycle_rule ? 1 : 0
+  bucket = aws_s3_bucket.default.bucket
+  
+  rule {
+    id     = "intelligent_tiering"
+    status = "Enabled"
+    filter {}
+    
+    transition {
+      days          = 0
+      storage_class = "INTELLIGENT_TIERING"
     }
   }
 }

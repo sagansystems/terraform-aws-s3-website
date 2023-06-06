@@ -111,7 +111,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cdn_bucket" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "default" {
-  count = var.enable_origin_bucket_intelligent_tiering_lifecycle_rule != [] ? 1 : 0
+  count = var.enable_origin_bucket_intelligent_tiering_lifecycle_rule ? 1 : 0
   bucket = aws_s3_bucket.default.bucket
   
   rule {

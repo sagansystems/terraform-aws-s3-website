@@ -16,16 +16,17 @@ locals {
 }
 
 module "logs" {
-  source                    = "cloudposse/s3-log-storage/aws"
-  version                   = "0.20.0"
-  attributes                = ["logs"]
-  enabled                   = var.logs_enabled
-  standard_transition_days  = var.logs_standard_transition_days
-  enable_glacier_transition = var.logs_enable_glacier_transition
-  glacier_transition_days   = var.logs_glacier_transition_days
-  expiration_days           = var.logs_expiration_days
-  force_destroy             = var.force_destroy
-  versioning_enabled        = var.logs_object_versioning_enabled
+  source                             = "cloudposse/s3-log-storage/aws"
+  version                            = "0.20.0"
+  attributes                         = ["logs"]
+  enabled                            = var.logs_enabled
+  standard_transition_days           = var.logs_standard_transition_days
+  enable_glacier_transition          = var.logs_enable_glacier_transition
+  glacier_transition_days            = var.logs_glacier_transition_days
+  noncurrent_version_expiration_days = var.logs_noncurrent_version_expiration_days
+  expiration_days                    = var.logs_expiration_days
+  force_destroy                      = var.force_destroy
+  versioning_enabled                 = var.logs_object_versioning_enabled
 
   context = module.this.context
 }
@@ -111,14 +112,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cdn_bucket" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "default" {
-  count = var.enable_origin_bucket_intelligent_tiering_lifecycle_rule ? 1 : 0
+  count  = var.enable_origin_bucket_intelligent_tiering_lifecycle_rule ? 1 : 0
   bucket = aws_s3_bucket.default.bucket
-  
+
   rule {
     id     = "intelligent_tiering"
     status = "Enabled"
     filter {}
-    
+
     transition {
       days          = 0
       storage_class = "INTELLIGENT_TIERING"

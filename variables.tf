@@ -147,3 +147,9 @@ variable "enable_origin_bucket_intelligent_tiering_lifecycle_rule" {
   default     = false
   description = "Enable or disable intelligent tiering lifecycle rule"
 }
+
+variable "logs_noncurrent_version_expiration_days" {
+  type        = number
+  description = "Number of days to persist noncurrent versions before expiration"
+  default     = 1
+}
